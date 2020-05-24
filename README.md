@@ -7,6 +7,45 @@ The use of this app is pretty straight forward
 ![ezgif com-video-to-gif](https://user-images.githubusercontent.com/38250076/82755604-f0fd9680-9dd4-11ea-898c-da4efd574cb5.gif)
 
 
+## Installation
+
+If you installed Anaconda, you can create an environement by opening the anaconda prompt and taping the following:
+
+create the environnement
+```
+conda create --name pdf
+```
+
+activate the environnement
+```
+conda activate pdf
+```
+
+clone the repo git 
+```
+git clone https://github.com/spacewaterbear/modifs-pdfs.git
+```
+
+move to the project folder and install requirements 
+```
+cd modifs-pdfs
+```
+```
+pip install -r requirements
+```
+
+Move to code and create an executable
+```
+cd code
+```
+```
+fbs freeze
+```
+and then create an installer
+```
+fbs installer
+```
+
 ## Credits
 
 - Logo of the app is made by <a href="https://www.flaticon.com/authors/dimitry-miroliubov" title="Dimitry Miroliubov">Dimitry Miroliubov</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
