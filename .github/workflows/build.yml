@@ -17,6 +17,8 @@ jobs:
             artifact: modifs-pdfs-linux
           - os: windows-latest
             artifact: modifs-pdfs-windows
+          - os: macos-latest
+            artifact: modifs-pdfs-macos
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -32,8 +34,8 @@ jobs:
         working-directory: code
         run: uv run pyinstaller modifs_pdfs.spec
 
-      - name: Zip (Linux)
-        if: matrix.os == 'ubuntu-latest'
+      - name: Zip (Linux/macOS)
+        if: matrix.os != 'windows-latest'
         run: zip -r ${{ matrix.artifact }}.zip code/dist/
 
       - name: Zip (Windows)
