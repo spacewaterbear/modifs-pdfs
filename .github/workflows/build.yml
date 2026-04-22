@@ -8,6 +8,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write
     strategy:
       matrix:
         include:
@@ -30,8 +32,16 @@ jobs:
         working-directory: code
         run: uv run pyinstaller modifs_pdfs.spec
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Zip (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: zip -r ${{ matrix.artifact }}.zip code/dist/
+
+      - name: Zip (Windows)
+        if: matrix.os == 'windows-latest'
+        run: Compress-Archive -Path code/dist/* -DestinationPath ${{ matrix.artifact }}.zip
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: ${{ matrix.artifact }}
-          path: code/dist/
+          files: ${{ matrix.artifact }}.zip
