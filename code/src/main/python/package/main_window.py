@@ -2,16 +2,12 @@ import os
 from time import sleep
 from typing import List
 
-from PySide2 import QtWidgets, QtCore, QtGui
-from PyPDF2 import PdfFileMerger, PdfFileReader, PdfFileWriter
-from PySide2.QtWidgets import QMessageBox, QListWidgetItem
+from PySide6 import QtWidgets, QtCore, QtGui
+from pypdf import PdfReader, PdfWriter
+from PySide6.QtWidgets import QMessageBox, QListWidgetItem
 from pygame import mixer
 
 def play_mp3(son):
-    """
-    son :  path du fichier audio
-    joue le son
-    """
     mixer.init()
     mixer.music.load(son)
     mixer.music.play()
@@ -48,14 +44,14 @@ class MainWindow(QtWidgets.QWidget):
         css_file = self.ctx.get_resource('style.css')
         with open(css_file, "r") as f:
             self.setStyleSheet(f.read())
-        self.lbl_dropInfoSup.setAlignment(QtCore.Qt.AlignHCenter)
-        self.lbl_dropInfo.setAlignment(QtCore.Qt.AlignHCenter)
+        self.lbl_dropInfoSup.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.lbl_dropInfo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.lbl_dropInfo.setVisible(False)
         self.setAcceptDrops(True)
-        self.lw_files.setSelectionMode(QtWidgets.QListWidget.ExtendedSelection)
+        self.lw_files.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         self.lw_files.setSortingEnabled(True)
-        self.lw_files.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        self.lbl_fileName.setAlignment(QtCore.Qt.AlignHCenter)
+        self.lw_files.setDragDropMode(QtWidgets.QAbstractItemView.DragDropMode.InternalMove)
+        self.lbl_fileName.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
 
     def create_layouts(self):
         self.main_layout = QtWidgets.QGridLayout(self)
@@ -70,7 +66,7 @@ class MainWindow(QtWidgets.QWidget):
         self.main_layout.addWidget(self.btn_merge, 5, 1, 1,1)
 
     def setup_connections(self):
-        QtWidgets.QShortcut(QtGui.QKeySequence("Backspace"), self.lw_files, self.delete_selected_items)
+        QtGui.QShortcut(QtGui.QKeySequence("Backspace"), self.lw_files, self.delete_selected_items)
         self.btn_merge.clicked.connect(self.merging_pipeline)
         self.btn_split.clicked.connect(self.splitting_pipeline)
 
@@ -131,18 +127,18 @@ class MainWindow(QtWidgets.QWidget):
 
 
     def pdf_merging(self):
-        merger = PdfFileMerger()
+        writer = PdfWriter()
         for pdf in self.lw_items:
             try:
-                merger.append(pdf.text())
+                writer.append(pdf.text())
             except:
                 self.error_message_perso(
                     f"Impossible de lire le fichier \"{os.path.basename(pdf.text())}\"",
                     "Encore un fichier pdf corrompu, comme certains politiciens...")
                 return False
         self.file_name = self.le_fileName.text().replace(".pdf", "")
-        merger.write(os.path.join(self.first_file_path, f"{self.file_name}_fusionné.pdf"))
-        merger.close()
+        with open(os.path.join(self.first_file_path, f"{self.file_name}_fusionné.pdf"), "wb") as f:
+            writer.write(f)
         return True
 
 
@@ -150,18 +146,18 @@ class MainWindow(QtWidgets.QWidget):
         path = self.lw_items[0].text()
         with open(path, "rb") as f:
             try:
-                inputpdf = PdfFileReader(f, "rb")
+                inputpdf = PdfReader(f)
             except:
                 self.error_message_perso(f"Impossible de lire le fichier \"{self.full_name}\"",
                                          "Encore un fichier pdf corrompu, comme certains politiciens...")
                 return False
-            if inputpdf.numPages == 1:
+            if len(inputpdf.pages) == 1:
                 self.error_message_perso("Il n'y a qu'une seule page dans ton pdf", "愛ُしている")
                 return False
             self.file_name = self.le_fileName.text().replace(".pdf", "")
-            for i in range(inputpdf.numPages):
-                output = PdfFileWriter()
-                output.addPage(inputpdf.getPage(i))
+            for i, page in enumerate(inputpdf.pages):
+                output = PdfWriter()
+                output.add_page(page)
                 with open(os.path.join(self.first_file_path, f"{self.file_name}_{i + 1}.pdf"),
                           "wb") as outputStream:
                     output.write(outputStream)
@@ -200,7 +196,7 @@ class MainWindow(QtWidgets.QWidget):
     def add_file(self, path):
         items = [self.lw_files.item(index).text() for index in range(self.lw_files.count())]
         self.lbl_dropInfo.setVisible(False)
-        self.le_fileName.setText(os.path.basename(path)) #set the field name with the name of the first file
+        self.le_fileName.setText(os.path.basename(path))
         self.file_name = self.le_fileName.text().replace(".pdf", "")
         self.first_file_path = os.path.dirname(path)
         if path not in items:
@@ -211,8 +207,7 @@ class MainWindow(QtWidgets.QWidget):
         self.lw_items = [self.lw_files.item(index) for index in range(self.lw_files.count())]
 
     def error_message_perso(self, information_text, ok_text):
-        msgbox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, "",
+        msgbox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Icon.Warning, "",
                                        information_text)
-        msgbox.addButton(self.tr(ok_text), QMessageBox.ActionRole)
-        msgbox.exec_()
-
+        msgbox.addButton(self.tr(ok_text), QMessageBox.ButtonRole.ActionRole)
+        msgbox.exec()

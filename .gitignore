@@ -1,11 +1,6 @@
-
-.idea/vcs.xml
-code/target/Modifs PDFs
-code/target/PyInstaller
+.idea/
 installer
-.idea
-code/src/main/python/__pychache__
-code/src/main/python/__pycache__/document.pdf
-code/src/main/python/__pycache__/main.cpython-37.pyc
-code/src/main/python/package/__pycache__/pdf_management.cpython-37.pyc
-code/src/main/python/package/__pycache__/main_window.cpython-37.pyc
+code/build/
+code/dist/
+__pycache__/
+*.pyc

@@ -1,52 +1,60 @@
 # Modifs PDFs
-Modifs PDFs is a Pyside2 App made with python. This code can generate installer file compatible Windows, Mac and Linux.
-An executable for Windows is already present in target : Modifs PDFsSetup.exe
 
-## How to use
-The use of this app is pretty straight forward
+Modifs PDFs is a PySide6 desktop app to merge and split PDF files, built with Python 3.12.
+
 ![ezgif com-video-to-gif](https://user-images.githubusercontent.com/38250076/82755604-f0fd9680-9dd4-11ea-898c-da4efd574cb5.gif)
 
+## How to use
 
-## Installation
+Drop your PDF files into the window, then click **Fusionner** to merge them or **Séparer** to split one into individual pages.
 
-If you installed Anaconda, you can create an environement by opening the anaconda prompt and taping the following:
+## Development setup
 
-create the environnement
-```
-conda create --name pdf
-```
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then:
 
-activate the environnement
-```
-conda activate pdf
-```
-
-clone the repo git 
-```
+```bash
 git clone https://github.com/spacewaterbear/modifs-pdfs.git
-```
-
-move to the project folder and install requirements 
-```
 cd modifs-pdfs
-```
-```
-pip install -r requirements
+uv sync
+uv run python code/src/main/python/main.py
 ```
 
-Move to code and create an executable
+## Building an installer
+
+### Automatic (recommended) — GitHub Actions
+
+Push a version tag to trigger a build for both Windows and Linux automatically:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
+
+Once the workflow completes, download the executables from the **Actions** tab → select the run → **Artifacts**.
+
+You can also trigger a build manually from **Actions → Build → Run workflow**.
+
+### Manual — local build
+
+Requirements: `uv sync` done, then run from the `code/` directory:
+
+```bash
 cd code
+uv run pyinstaller modifs_pdfs.spec
 ```
+
+The executable is output to `code/dist/`. Note: you can only build for the platform you are currently on (run on Windows to get a `.exe`, run on Linux to get a Linux binary).
+
+#### Running the Linux binary
+
+```bash
+chmod +x "./code/dist/Modifs PDFs"
+"./code/dist/Modifs PDFs"
 ```
-fbs freeze
-```
-and then create an installer
-```
-fbs installer
-```
+
+If you downloaded it from GitHub Actions, unzip the artifact first, then run the same commands.
 
 ## Credits
 
-- Logo of the app is made by <a href="https://www.flaticon.com/authors/dimitry-miroliubov" title="Dimitry Miroliubov">Dimitry Miroliubov</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
-- This app is strongly inspired by the PyConverter made by <a href="https://www.linkedin.com/in/thibaulthoudon" title="Thibault Houdon">Thibault Houdon</a> through its course <a href="https://www.udemy.com/course/applications-bureau-qt-python/" title="Udemy_courses"> Créer 5 applications de bureau avec Qt for Python (PySide2)</a> 
+- Logo by <a href="https://www.flaticon.com/authors/dimitry-miroliubov" title="Dimitry Miroliubov">Dimitry Miroliubov</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+- Inspired by the PyConverter by <a href="https://www.linkedin.com/in/thibaulthoudon" title="Thibault Houdon">Thibault Houdon</a> — <a href="https://www.udemy.com/course/applications-bureau-qt-python/" title="Udemy">Créer 5 applications de bureau avec Qt for Python (PySide2)</a>
