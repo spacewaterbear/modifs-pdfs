@@ -1,0 +1,18 @@
+[project]
+name = "modifs-pdfs"
+version = "1.0.0"
+description = "PDF merge and split desktop application"
+requires-python = "==3.7.*"
+dependencies = [
+    "fbs==0.8.4",
+    "PyPDF2==1.26.0",
+    "pygame==1.9.6",
+    "PySide2==5.13.1",
+    "Pillow==7.1.2",
+    "pywin32==227; sys_platform == 'win32'",
+    "pypiwin32==223; sys_platform == 'win32'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
