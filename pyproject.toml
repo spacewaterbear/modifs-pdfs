@@ -5,7 +5,7 @@ description = "PDF merge and split desktop application"
 requires-python = "==3.12.*"
 dependencies = [
     "pyinstaller>=6.0",
-    "pypdf>=4.0",
+    "pypdf>=6.13.3",
     "pygame>=2.0",
     "PySide6",
     "pywin32; sys_platform == 'win32'",
