@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Modifs PDFs
+Comment=Merge and split PDF files
+Exec=modifs-pdfs
+Icon=modifs-pdfs
+Terminal=false
+Categories=Utility;
